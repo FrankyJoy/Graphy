@@ -103,6 +103,7 @@ void CMap::depthFirstTraverse(int nodeIndex)
 	cout << m_pNodeArray[nodeIndex].m_cData << " ";
 	m_pNodeArray[nodeIndex].m_bIsVisited = true;
 	// 用当前节点去查找与其连接的点，看是否存在弧
+	// 深度优先搜索比较简单，最初的搜索顺序是根据下标来的
 	for (int i = 0; i < m_iCapacity; i++)
 	{
 		getValueFromMatrix(nodeIndex,i,value);
@@ -119,7 +120,7 @@ void CMap::depthFirstTraverse(int nodeIndex)
 				depthFirstTraverse(i);
 			}
 		}
-		else
+		else	//如果=0表示没有相邻点
 		{
 			continue;
 		}
@@ -130,9 +131,11 @@ void CMap::depthFirstTraverse(int nodeIndex)
 /*广度优先搜索*/
 void CMap::breadthFirstTraverse(int nodeIndex)
 {
+	//首先输出当前节点的值
 	cout << m_pNodeArray[nodeIndex].m_cData << " ";
 	m_pNodeArray[nodeIndex].m_bIsVisited = true;
 
+	//将当前节点压入curVec容器中
 	vector<int> curVec;
 	curVec.push_back(nodeIndex);
 	
@@ -151,6 +154,7 @@ void CMap::breathFirstTraverseImpl(vector<int> preVec)
 		//查传入的值与其他值是否有连接
 		for (int i = 0; i < m_iCapacity; i++)
 		{
+			//	循环检查每一个点与上层点之间是否相连
 			getValueFromMatrix(preVec[j],i,value);
 			if (value != 0)//如果有连接
 			{
@@ -163,7 +167,7 @@ void CMap::breathFirstTraverseImpl(vector<int> preVec)
 					cout << m_pNodeArray[i].m_cData << " ";
 					m_pNodeArray[i].m_bIsVisited = true;
 
-					curVec.push_back(i);//放入连接点的索引
+					curVec.push_back(i);//放入连接点的索引，从上一层获取点集合求出该层与之相连的点集合
 				}
 			}
 
@@ -175,7 +179,7 @@ void CMap::breathFirstTraverseImpl(vector<int> preVec)
 	{
 		return;
 	}
-	else   //否则
+	else   //否则基础递归，直到所有的层都访问完。
 	{
 		breathFirstTraverseImpl(curVec);
 	}
